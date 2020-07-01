@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_RA_Forms", "API_RA_Forms.csproj", "{86143CA2-D6C6-48F0-987A-DC0B07B0BE99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAO", "..\DAO\DAO.csproj", "{27721EBF-50CD-4CEB-8742-8963DB3F2CA0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{86143CA2-D6C6-48F0-987A-DC0B07B0BE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86143CA2-D6C6-48F0-987A-DC0B07B0BE99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86143CA2-D6C6-48F0-987A-DC0B07B0BE99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27721EBF-50CD-4CEB-8742-8963DB3F2CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27721EBF-50CD-4CEB-8742-8963DB3F2CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27721EBF-50CD-4CEB-8742-8963DB3F2CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27721EBF-50CD-4CEB-8742-8963DB3F2CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

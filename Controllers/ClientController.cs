@@ -248,11 +248,39 @@ namespace API_RA_Forms.Controllers
 
                     db.SaveChanges();
 
+                    var branch = db.branch.Where(b => b.cli_document == pClient.id && b.bra_isMain == true)
+                                         .Select(b => new BranchViewModel { id = b.bra_id, name = b.bra_name })
+                                         .FirstOrDefault();
+
+
+                    if (branch == null) {
+                        branch bdBranch = new branch();
+                        if (pClient.kindOfDocument.description.ToUpper() == "NIT")
+                        {
+                            bdBranch.bra_name = "Principal " + pClient.name;
+                        }
+                        else
+                        {
+                            bdBranch.bra_name = "Principal " + pClient.name + " " + pClient.lastName;
+                        }
+
+                        bdBranch.bra_isMain = true;
+                        bdBranch.cli_document = pClient.id;
+                        bdBranch.bra_state = true;
+
+                        db.branch.Add(bdBranch);
+                        db.SaveChanges();
+
+                        branch = db.branch.Where(b => b.cli_document == pClient.id && b.bra_isMain == true)
+                                        .Select(b => new BranchViewModel { id = b.bra_id, name = b.bra_name })
+                                        .FirstOrDefault();
+                    }
+
+
+
                     if (pClient.lsContacts != null)
                     {
-                        var branch = db.branch.Where(b => b.cli_document == pClient.id && b.bra_isMain == true)
-                                          .Select(b => new BranchViewModel { id = b.bra_id, name = b.bra_name })
-                                          .FirstOrDefault();
+                       
 
                         foreach (var contact in pClient.lsContacts)
                         {

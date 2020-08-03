@@ -7,7 +7,7 @@ namespace API_RA_Forms.ViewModels
 {
     public class StateViewModel
     {
-        public int id;
+        public Nullable<int> id;
         public string description;
         public int? parentState;
         public bool state;

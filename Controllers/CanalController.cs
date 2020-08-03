@@ -11,20 +11,21 @@ namespace API_RA_Forms.Controllers
     public class CanalController : ApiController
     {
         [HttpGet]
-        public List<CanalViewModel> Get() {
+        public IHttpActionResult Get(int canalGroup_id) {
             try
             {
                 using (BDRAEntities db = new BDRAEntities())
                 {
-                    var lsCanal = db.Canal
+                    var lsCanal = db.Canal       
+                                    .Where(cnl => cnl.cnlGrp_id == canalGroup_id)
                                     .Select(cnl => new CanalViewModel { id = cnl.cnl_id, description = cnl.cnl_description, state = cnl.cnl_state })
                                     .ToList();
-                    return lsCanal;
+                    return Ok(lsCanal);
                 }
             }
             catch (Exception e)
             {
-                throw;
+                return BadRequest(e.Message);
             }
            
         }

@@ -13,6 +13,7 @@ namespace API_RA_Forms.ViewModels
         public string name;
         public string lastName;
         public string cellPhone;
+        public string phone;
         public string email;
         public CityViewModel city;
     }

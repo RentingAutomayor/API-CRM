@@ -7,7 +7,7 @@ namespace API_RA_Forms.ViewModels
 {
     public class KindOfDocumentViewModel
     {
-        public int id;
+        public Nullable<int> id;
         public string description;
     }
 }

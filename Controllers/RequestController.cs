@@ -5,123 +5,191 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Resources;
 using System.Security.Permissions;
 using System.Text;
 using System.Web.Http;
 using API_RA_Forms.ViewModels;
 using DAO;
+using Newtonsoft.Json;
 
 namespace API_RA_Forms.Controllers
 {
     public class RequestController : ApiController
     {
         [HttpGet]
+
+        public IHttpActionResult GetRequestByFilter(string pKindOfFilter, string pValue) {
+						try
+						{
+                using (BDRAEntities db = new BDRAEntities()) {
+                    var lsRequestFiltered = db.STRPRC_GET_REQUEST_BY_FILTER_VALUE(pKindOfFilter, pValue);
+                    List<RequestViewModel> lsRequestResponse = new List<RequestViewModel>();
+										foreach (var request in lsRequestFiltered)
+										{
+												RequestViewModel rqt = new RequestViewModel();
+												rqt.id = int.Parse(request.code);
+												rqt.client = new ClientViewModel();
+												rqt.client.name = request.name;
+												rqt.client.lastName = request.lastName;
+												rqt.probability = new ProbabilityViewModel();
+												rqt.probability.description = request.probability;
+												rqt.parentState = new StateViewModel();
+												rqt.parentState.description = request.primaryState;
+												rqt.childState = new StateViewModel();
+												rqt.childState.description = request.secondState;
+												rqt.registrationDate = request.registrationDate;
+												rqt.user = new UserViewModel();
+												rqt.user.name = request.userName;
+												rqt.user.lastName = request.userLastName;
+												lsRequestResponse.Add(rqt);
+										}
+
+
+										return Ok(lsRequestResponse);
+                }
+                
+						}
+						catch (Exception ex)
+						{
+
+                return BadRequest(ex.Message);
+						}
+        }
+
+        [HttpGet]
         public IHttpActionResult GetAllRequest() {
             var clientController = new ClientController();
             try
             {
-                using (BDRAEntities db = new BDRAEntities()) {
-                    var lsRequest = db.Request.Where(r => r.rqt_state == true)
-                                            .Select(r => new RequestViewModel { 
-                                                id = r.rqt_id,
-                                                client =  new ClientViewModel { 
-                                                                    id = r.Client.cli_document,
-                                                                    kindOfDocument = new KindOfDocumentViewModel { 
-                                                                                            id = r.Client.kindOfDocument.kod_id,
-                                                                                            description= r.Client.kindOfDocument.kod_description},
-                                                                    name = r.Client.cli_name,
-                                                                    lastName = r.Client.cli_lastName,
-                                                                    cellPhone = r.Client.cli_cellPhone,
-                                                                    email = r.Client.cli_email,
-                                                                    city  = new CityViewModel { 
-                                                                                id = r.Client.Cities.cty_id,
-                                                                                name = r.Client.Cities.cty_name,
-                                                                                departmentId = r.Client.Cities.dpt_id},
-                                                                    economicActivity = new EconomicActivityViewModel { 
-                                                                                id = r.Client.EconomicActivity.ea_id,
-                                                                                description = r.Client.EconomicActivity.ea_description
-                                                                                },
-                                                                    canal = new CanalViewModel { 
-                                                                                id = r.Client.Canal.cnl_id,
-                                                                                description = r.Client.Canal.cnl_description
-                                                                                }
-                                                },
-                                                probability = new ProbabilityViewModel { id = r.probability.prb_id,description=r.probability.prb_description},
-                                                parentState = new StateViewModel { id = r.states.sta_id,description = r.states.sta_description},
-                                                childState = new StateViewModel { id = r.states1.sta_id,description= r.states1.sta_description},
-                                                user = new UserViewModel {  id= r.users.usu_document,name = r.users.usu_name, lastName = r.users.usu_lastName},
-                                                contact = new ContactViewModel {id = r.Contact.cnt_id, name = r.Contact.cnt_name, lastName = r.Contact.cnt_lastName},
-                                                initialDate = r.rqt_firstVisitDate,
-                                                lastDate = r.rqt_lastVisitDate,
-                                                registrationDate = r.rqt_registrationDate
-                                            }).OrderByDescending(r => r.registrationDate)
-                                            .ToList();
+                using (BDRAEntities db = new BDRAEntities())
+                {
 
-                    foreach (var rqt in lsRequest) {
-                        var riskInformation = db.riskInformationByRequest.Where(ri => ri.rqt_id == rqt.id && ri.ribr_state == true).FirstOrDefault();
+                    var lsRequest = db.STRPRCD_GET_ALL_REQUEST();
+                    List<RequestViewModel> lsRequestResponse = new List<RequestViewModel>();
+                    foreach (var request in lsRequest) {
+                        RequestViewModel rqt = new RequestViewModel();
+                        rqt.id = request.code;
+                        rqt.client = new ClientViewModel();
+                        rqt.client.name = request.name;
+                        rqt.client.lastName = request.lastName;
+                        rqt.probability = new ProbabilityViewModel();
+                        rqt.probability.description = request.probability;
+                        rqt.parentState = new StateViewModel();
+                        rqt.parentState.description = request.primaryState;
+                        rqt.childState = new StateViewModel();
+                        rqt.childState.description = request.secondState;
+                        rqt.registrationDate = request.registrationDate;
+                        rqt.user = new UserViewModel();
+                        rqt.user.name = request.userName;
+                        rqt.user.lastName = request.userLastName;
+                        lsRequestResponse.Add(rqt);
+                    }               
 
-                        if (riskInformation.states != null) {
-                            var oState = new StateViewModel();
-                            oState.id = riskInformation.states.sta_id;
-                            oState.description = riskInformation.states.sta_description;
+                  
+                    return Ok(lsRequestResponse);
+                }
+                //    var lsRequest = db.Request.Where(r => r.rqt_state == true)
+                //                            .Select(r => new RequestViewModel { 
+                //                                id = r.rqt_id,
+                //                                client =  new ClientViewModel { 
+                //                                                    id = r.Client.cli_document,
+                //                                                    kindOfDocument = new KindOfDocumentViewModel { 
+                //                                                                            id = r.Client.kindOfDocument.kod_id,
+                //                                                                            description= r.Client.kindOfDocument.kod_description},
+                //                                                    name = r.Client.cli_name,
+                //                                                    lastName = r.Client.cli_lastName,
+                //                                                    cellPhone = r.Client.cli_cellPhone,
+                //                                                    email = r.Client.cli_email,
+                //                                                    city  = new CityViewModel { 
+                //                                                                id = r.Client.Cities.cty_id,
+                //                                                                name = r.Client.Cities.cty_name,
+                //                                                                departmentId = r.Client.Cities.dpt_id},
+                //                                                    economicActivity = new EconomicActivityViewModel { 
+                //                                                                id = r.Client.EconomicActivity.ea_id,
+                //                                                                description = r.Client.EconomicActivity.ea_description
+                //                                                                },
+                //                                                    canal = new CanalViewModel { 
+                //                                                                id = r.Client.Canal.cnl_id,
+                //                                                                description = r.Client.Canal.cnl_description
+                //                                                                }
+                //                                },
+                //                                probability = new ProbabilityViewModel { id = r.probability.prb_id,description=r.probability.prb_description},
+                //                                parentState = new StateViewModel { id = r.states.sta_id,description = r.states.sta_description},
+                //                                childState = new StateViewModel { id = r.states1.sta_id,description= r.states1.sta_description},
+                //                                user = new UserViewModel {  id= r.users.usu_document,name = r.users.usu_name, lastName = r.users.usu_lastName},
+                //                                contact = new ContactViewModel {id = r.Contact.cnt_id, name = r.Contact.cnt_name, lastName = r.Contact.cnt_lastName},
+                //                                initialDate = r.rqt_firstVisitDate,
+                //                                lastDate = r.rqt_lastVisitDate,
+                //                                registrationDate = r.rqt_registrationDate
+                //                            }).OrderByDescending(r => r.registrationDate)
+                //                            .ToList();
 
-                            rqt.riskInformation = new RiskInformationViewModel()
-                            {
-                                id = riskInformation.ribr_id,
-                                riskState = oState,
-                                ammountApproved = long.Parse(riskInformation.ribr_ammountApproved.ToString()),
-                                datefiling = riskInformation.ribr_dateFiling
-                            };
-                        }                     
+                //    foreach (var rqt in lsRequest) {
+                //        var riskInformation = db.riskInformationByRequest.Where(ri => ri.rqt_id == rqt.id && ri.ribr_state == true).FirstOrDefault();
+
+                //        if (riskInformation.states != null) {
+                //            var oState = new StateViewModel();
+                //            oState.id = riskInformation.states.sta_id;
+                //            oState.description = riskInformation.states.sta_description;
+
+                //            rqt.riskInformation = new RiskInformationViewModel()
+                //            {
+                //                id = riskInformation.ribr_id,
+                //                riskState = oState,
+                //                ammountApproved = long.Parse(riskInformation.ribr_ammountApproved.ToString()),
+                //                datefiling = riskInformation.ribr_dateFiling
+                //            };
+                //        }                     
 
                         
 
-                        var operationalInformation = db.operationalInformationByRequest.Where(oi => oi.rqt_id == rqt.id && oi.oibr_state == true).FirstOrDefault();
+                //        var operationalInformation = db.operationalInformationByRequest.Where(oi => oi.rqt_id == rqt.id && oi.oibr_state == true).FirstOrDefault();
 
 
-                        rqt.operationalInformation = new OperationalInformationViewModel()
-                        {
-                            id = operationalInformation.oibr_id,
-                            deliveredAmmount = Decimal.Parse(operationalInformation.oibr_deliveredAmmount.ToString()),
-                            deliveredVehicles = int.Parse(operationalInformation.oibr_deliveredVehicles.ToString()),
-                            deliveredDate = operationalInformation.oibr_deliveredDate,
-                            legalizationDate = operationalInformation.oibr_legalizationDate
-                        };
+                //        rqt.operationalInformation = new OperationalInformationViewModel()
+                //        {
+                //            id = operationalInformation.oibr_id,
+                //            deliveredAmmount = Decimal.Parse(operationalInformation.oibr_deliveredAmmount.ToString()),
+                //            deliveredVehicles = int.Parse(operationalInformation.oibr_deliveredVehicles.ToString()),
+                //            deliveredDate = operationalInformation.oibr_deliveredDate,
+                //            legalizationDate = operationalInformation.oibr_legalizationDate
+                //        };
 
 
 
 
-                        try
-                        {
+                //        try
+                //        {
 
-                            var branch = db.branch.Where(br => br.cli_document == rqt.client.id).FirstOrDefault();
-                            var lsContactsByClient = db.Contact.Where(cnt => cnt.bra_id == branch.bra_id)
-                                                          .Select(cnt => new ContactViewModel
-                                                          {
-                                                              id = cnt.cnt_id,
-                                                              name = cnt.cnt_name,
-                                                              lastName = cnt.cnt_lastName,
-                                                              phone = cnt.cnt_phone,
-                                                              cellPhone = cnt.cnt_cellPhone,
-                                                              email = cnt.cnt_email,
-                                                              jobTitle = new JobTitleViewModel { id = cnt.JobTitlesClient.jtcl_id, description = cnt.JobTitlesClient.jtcl_description },
-                                                              adress = cnt.cnt_adress,
-                                                              branch = new BranchViewModel { id = cnt.branch.bra_id, name = cnt.branch.bra_name }
-                                                          }).ToList();
+                //            var branch = db.branch.Where(br => br.cli_document == rqt.client.id).FirstOrDefault();
+                //            var lsContactsByClient = db.Contact.Where(cnt => cnt.bra_id == branch.bra_id)
+                //                                          .Select(cnt => new ContactViewModel
+                //                                          {
+                //                                              id = cnt.cnt_id,
+                //                                              name = cnt.cnt_name,
+                //                                              lastName = cnt.cnt_lastName,
+                //                                              phone = cnt.cnt_phone,
+                //                                              cellPhone = cnt.cnt_cellPhone,
+                //                                              email = cnt.cnt_email,
+                //                                              jobTitle = new JobTitleViewModel { id = cnt.JobTitlesClient.jtcl_id, description = cnt.JobTitlesClient.jtcl_description },
+                //                                              adress = cnt.cnt_adress,
+                //                                              branch = new BranchViewModel { id = cnt.branch.bra_id, name = cnt.branch.bra_name }
+                //                                          }).ToList();
 
 
-                            rqt.client.lsContacts = lsContactsByClient;
-                        }
-                        catch (Exception ex) {
-                            Console.WriteLine("El cliente no tiene contactos");
-                            continue;
+                //            rqt.client.lsContacts = lsContactsByClient;
+                //        }
+                //        catch (Exception ex) {
+                //            Console.WriteLine("El cliente no tiene contactos");
+                //            continue;
                             
-                        }
+                //        }
                        
-                    }
+                //    }
 
-                    return Ok(lsRequest);
-                }
+                //    return Ok(lsRequest);
+                //}
             }
             catch (Exception ex)
             {
@@ -238,7 +306,7 @@ namespace API_RA_Forms.Controllers
 
                     if (pDescription.ToUpper() == "TODOS")
                     {
-                        lsParentStates = db.states.Where( st=>st.sta_parentState == null && st.stateGroup.stGrp_id != 2)
+                        lsParentStates = db.states.Where( st=>st.sta_parentState == null && st.stateGroup.stGrp_id != 2 && st.stateGroup.stGrp_id != 4)
                                                   .Select(st => new StateViewModel { id = st.sta_id, description = st.sta_description })
                                                   .ToList();
                     }

@@ -83,6 +83,7 @@ namespace API_RA_Forms.Controllers
                                                 name = cl.cli_name,
                                                 lastName = cl.cli_lastName,
                                                 cellPhone = cl.cli_cellPhone,
+                                                phone = cl.cli_phone,
                                                 email = cl.cli_email,
                                                 city = new CityViewModel { id = cl.Cities.cty_id, name = cl.Cities.cty_name, departmentId = cl.Cities.dpt_id },
                                                 economicActivity = new EconomicActivityViewModel { id = cl.EconomicActivity.ea_id, description = cl.EconomicActivity.ea_description },
@@ -102,6 +103,7 @@ namespace API_RA_Forms.Controllers
                                                     name = cl.cli_name,
                                                     lastName = cl.cli_lastName,
                                                     cellPhone = cl.cli_cellPhone,
+                                                    phone = cl.cli_phone,
                                                     email = cl.cli_email,
                                                     city = new CityViewModel { id = cl.Cities.cty_id, name = cl.Cities.cty_name, departmentId = cl.Cities.dpt_id },
                                                     economicActivity = new EconomicActivityViewModel { id = cl.EconomicActivity.ea_id, description = cl.EconomicActivity.ea_description },
@@ -161,6 +163,7 @@ namespace API_RA_Forms.Controllers
                     oClient.cli_name = pClient.name;
                     oClient.cli_lastName = pClient.lastName;
                     oClient.cli_cellPhone = pClient.cellPhone;
+                    oClient.cli_phone = pClient.phone;
                     oClient.cty_id = pClient.city.id;
                     oClient.ea_id = pClient.economicActivity.id;
                     oClient.cli_state = true;
@@ -202,6 +205,7 @@ namespace API_RA_Forms.Controllers
                             bdContact.cnt_name = cont.name;
                             bdContact.cnt_lastName = cont.lastName;
                             bdContact.cnt_cellPhone = cont.cellPhone;
+                            bdContact.cnt_phone = cont.phone;
                             bdContact.cnt_email = cont.email;
                             bdContact.cnt_adress = cont.adress;
                             bdContact.jtcl_id = cont.jobTitle.id;
@@ -241,6 +245,7 @@ namespace API_RA_Forms.Controllers
                     oClientBd.cli_name = pClient.name;
                     oClientBd.cli_lastName = pClient.lastName;
                     oClientBd.cli_cellPhone = pClient.cellPhone;
+                    oClientBd.cli_phone = pClient.phone;
                     oClientBd.cli_email = pClient.email;
                     oClientBd.ea_id = pClient.economicActivity.id;
                     oClientBd.cnl_id = pClient.canal.id;
@@ -291,6 +296,7 @@ namespace API_RA_Forms.Controllers
                                 bdContact.cnt_name = contact.name;
                                 bdContact.cnt_lastName = contact.lastName;
                                 bdContact.cnt_cellPhone = contact.cellPhone;
+                                bdContact.cnt_phone = contact.phone;
                                 bdContact.cnt_email = contact.email;
                                 bdContact.cnt_adress = contact.adress;
                                 bdContact.jtcl_id = contact.jobTitle.id;

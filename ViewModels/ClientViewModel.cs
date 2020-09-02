@@ -7,8 +7,7 @@ namespace API_RA_Forms.ViewModels
 {
     public class ClientViewModel : PersonViewModel
     {
-        public EconomicActivityViewModel economicActivity;
-        public CanalViewModel canal;
+        public EconomicActivityViewModel economicActivity;        
         public List<ContactViewModel> lsContacts;
     }
 }

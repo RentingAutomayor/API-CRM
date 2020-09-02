@@ -86,10 +86,10 @@ namespace API_RA_Forms.Controllers
                                                 phone = cl.cli_phone,
                                                 email = cl.cli_email,
                                                 city = new CityViewModel { id = cl.Cities.cty_id, name = cl.Cities.cty_name, departmentId = cl.Cities.dpt_id },
-                                                economicActivity = new EconomicActivityViewModel { id = cl.EconomicActivity.ea_id, description = cl.EconomicActivity.ea_description },
-                                                canal = new CanalViewModel { id = cl.Canal.cnl_id, description = cl.Canal.cnl_description }
-
-
+                                                economicActivity = new EconomicActivityViewModel {
+                                                    id = cl.EconomicActivity.ea_id,
+                                                    description = cl.EconomicActivity.ea_description 
+                                                }                                             
                                             }).Take(10)
                                             .ToList();
                     }
@@ -106,8 +106,12 @@ namespace API_RA_Forms.Controllers
                                                     phone = cl.cli_phone,
                                                     email = cl.cli_email,
                                                     city = new CityViewModel { id = cl.Cities.cty_id, name = cl.Cities.cty_name, departmentId = cl.Cities.dpt_id },
-                                                    economicActivity = new EconomicActivityViewModel { id = cl.EconomicActivity.ea_id, description = cl.EconomicActivity.ea_description },
-                                                    canal = new CanalViewModel { id = cl.Canal.cnl_id, description = cl.Canal.cnl_description }
+                                                    economicActivity = new EconomicActivityViewModel 
+                                                    { 
+                                                        id = cl.EconomicActivity.ea_id,
+                                                        description = cl.EconomicActivity.ea_description 
+                                                    },
+                                                   
                                                 }).Take(10)
                                                 .ToList();
                     }
@@ -169,7 +173,7 @@ namespace API_RA_Forms.Controllers
                     oClient.cli_state = true;
                     oClient.cli_registrationDate = DateTime.Now;
                     oClient.cli_email = pClient.email;
-                    oClient.cnl_id = pClient.canal.id;
+                    
 
 
                     db.Client.Add(oClient);
@@ -247,8 +251,7 @@ namespace API_RA_Forms.Controllers
                     oClientBd.cli_cellPhone = pClient.cellPhone;
                     oClientBd.cli_phone = pClient.phone;
                     oClientBd.cli_email = pClient.email;
-                    oClientBd.ea_id = pClient.economicActivity.id;
-                    oClientBd.cnl_id = pClient.canal.id;
+                    oClientBd.ea_id = pClient.economicActivity.id;                   
                     oClientBd.cty_id = pClient.city.id;
 
                     db.SaveChanges();

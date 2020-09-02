@@ -20,5 +20,7 @@ namespace API_RA_Forms.ViewModels
         public ContactViewModel contact;
         public RiskInformationViewModel riskInformation;
         public OperationalInformationViewModel operationalInformation;
+        public CanalViewModel canal;
+        public string observation;
     }
 }

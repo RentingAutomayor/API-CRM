@@ -101,40 +101,7 @@ namespace API_RA_Forms.Controllers
 						}
         }
 
-				//[HttpPost]
-				//public IHttpActionResult AddNewPreClient(PreClientViewModel pPreClient) {
-				//		try
-				//		{
-				//				ResponseViewModel rta = new ResponseViewModel();
-				//				using (BDRAEntities db = new BDRAEntities())
-				//				{
-				//						PreClient preCli = new PreClient();
-				//						preCli.preCli_document = pPreClient.id;
-				//						preCli.kod_id = pPreClient.kindOfDocument.id;
-				//						preCli.preCli_name = pPreClient.name;
-				//						preCli.preCli_lastName = pPreClient.lastName;
-				//						preCli.preCli_phone = pPreClient.phone;
-				//						preCli.preCli_cellPhone = pPreClient.cellPhone;
-				//						preCli.preCli_email = pPreClient.email;
-				//						preCli.cty_id = pPreClient.city.id;
-				//						preCli.preCli_state = true;
-				//						preCli.preCli_registrationDate = DateTime.Now;
-				//						preCli.usu_document = pPreClient.user.id;
-
-				//						db.PreClient.Add(preCli);
-				//						db.SaveChanges();
-
-				//						rta.response = true;
-				//						rta.message = "Se agrega el pre - cliente: " + pPreClient.name + " " + pPreClient.lastName;
-				//						return Ok(rta);
-				//				}
-								
-				//		}
-				//		catch (Exception ex)
-				//		{
-				//				return BadRequest(ex.Message);								
-				//		}
-				//}
+	
 
 				public PreClient GetPreClientBD(PreClientViewModel pPreClient)
 				{
@@ -296,8 +263,9 @@ namespace API_RA_Forms.Controllers
 										preClientBd.preCli_document = pPreClient.id;
 										preClientBd.kod_id = pPreClient.kindOfDocument.id;
 										preClientBd.preCli_name = pPreClient.name;
-										preClientBd.preCli_lastName = pPreClient.lastName;
+										preClientBd.preCli_lastName = pPreClient.lastName;										
 										preClientBd.preCli_cellPhone = pPreClient.cellPhone;
+										preClientBd.preCli_phone = pPreClient.phone;
 										preClientBd.preCli_email = pPreClient.email;
 										preClientBd.cty_id = pPreClient.city.id;
 

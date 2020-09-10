@@ -17,5 +17,7 @@ namespace API_RA_Forms.ViewModels
 				public UserViewModel user;
 				public CanalViewModel firstCanal;
 				public CanalViewModel secondCanal;
+				public List<PreRequestObservationViewModel> lsObservation;
 		}  
+		
 }

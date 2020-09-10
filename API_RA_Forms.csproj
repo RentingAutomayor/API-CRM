@@ -210,6 +210,7 @@
     <Compile Include="ViewModels\PermissionViewModel.cs" />
     <Compile Include="ViewModels\PersonViewModel.cs" />
     <Compile Include="ViewModels\PreClientViewModel.cs" />
+    <Compile Include="ViewModels\PreRequestObservationViewModel.cs" />
     <Compile Include="ViewModels\PreRequestViewModel.cs" />
     <Compile Include="ViewModels\ProbabilityViewModel.cs" />
     <Compile Include="ViewModels\RequestViewModel.cs" />

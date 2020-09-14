@@ -199,6 +199,7 @@
     <Compile Include="ViewModels\CityViewModel.cs" />
     <Compile Include="ViewModels\ClientViewModel.cs" />
     <Compile Include="ViewModels\ContactViewModel.cs" />
+    <Compile Include="ViewModels\DataStructureForFile.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\EconomicActivityViewModel.cs" />
     <Compile Include="ViewModels\JobTitleViewModel.cs" />

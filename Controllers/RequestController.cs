@@ -521,107 +521,93 @@ namespace API_RA_Forms.Controllers
 						}
 				}
 
-				[HttpPost]
-				public IHttpActionResult generateArchive()
-				{
-						var path = ConfigurationManager.AppSettings["FilePath"];
-						var fName = ConfigurationManager.AppSettings["FileName"];
-						var fileName = "";
-
+				[HttpGet]
+				public IHttpActionResult GetDataToExportFile() {
 						try
 						{
-								ResponseViewModel response = new ResponseViewModel();
+								List<DataStructureForFile> lsDataFile = new List<DataStructureForFile>();
 								using (BDRAEntities db = new BDRAEntities())
 								{
-										var archiveContent = db.RA_SP_GetDataToFile();
-										var date = DateTime.Now.ToString().Substring(0, 10);
-										date = date.Replace("-", "");
-										date = date.Replace("/", "");
+										var lsDataToExportFile = db.STRPRC_GetDataToExportFile();
 
-										//var fileName = "\\\\Rabgti02dssn\\prueba\\prueba_" + date + ".csv";
-
-										fileName = path + fName + "_" + date + ".csv";
-
-										FileIOPermission fp = new FileIOPermission(FileIOPermissionAccess.Read, fileName);
-										fp.AddPathList(FileIOPermissionAccess.Write | FileIOPermissionAccess.Read, fileName);
-
-										fp.Demand();
-
-										using (var archive = new StreamWriter(new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite), Encoding.UTF8))
-										{
-
-												var enc = string.Format("NIT;Consecutivo;Canal;Cliente;Gerente Renting;VP;Banca;Segmento;Regional;CNE/Zona;CC Banco;Gerente a cargo banco;Departamento Empresa;Ciudad Empresa;Dane empresa;Contacto Empresa;Cargo;Telefono;Celular;Direccion;Correo;Actividad económica;Código Act Económica;Fecha Visita;Fecha Última Visita;Estado Principal;Estado Secundario;Tercer Estado;Probabilidad;Decision Riesgo;Fecha de radicacion Riesgo;Monto Aprobado;# Vehiculos Entregados;Monto Activos Entregados;Fecha de legalización;Fecha de entrega;Usuario Creación Registro;Fecha creación;Usuario Actualización Registro;Fecha Actualización;Usuario Actualización RiesgoOP;Fecha Actualización Riesgo OP");
-
-												archive.WriteLine(enc);
-												archive.Flush();
-
-												foreach (var content in archiveContent)
-												{
-
-														var line = string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12};{13};{14};{15};{16};{17};{18};{19};{20};{21};{22};{23};{24};{25};{26};{27};{28};{29};{30};{31};{32};{33};{34};{35};{36};{37};{38};{39};{40};{41}",
-																content.NIT,
-																content.Consecutivo,
-																content.Canal,
-																content.Cliente,
-																content.Gerente_Renting,
-																content.VP,
-																content.Banca,
-																content.Segmento,
-																content.Regional,
-																content.CNE_Zona,
-																content.CC_Banco,
-																content.Gerente_a_cargo_banco,
-																content.Departamento_Empresa,
-																content.Ciudad_Empresa,
-																content.Dane_empresa,
-																content.Contacto_Empresa,
-																content.Cargo,
-																content.Telefono,
-																content.Celular,
-																content.Direccion,
-																content.Correo,
-																content.Actividad_económica,
-																content.Código_Act_Económica,
-																content.Fecha_Visita,
-																content.Fecha_Última_Visita,
-																content.Estado_Principal,
-																content.Estado_Secundario,
-																content.Tercer_Estado,
-																content.Probabilidad,
-																content.Decision_Riesgo,
-																content.Fecha_de_radicacion_Riesgo,
-																content.Monto_Aprobado,
-																content.C__Vehiculos_Entregados,
-																content.Monto_Activos_Entregados,
-																content.Fecha_de_legalización,
-																content.Fecha_de_entrega,
-																content.Usuario_Creación_Registro,
-																content.Fecha_creación,
-																content.Usuario_Actualización_Registro,
-																content.Fecha_Actualización,
-																content.Usuario_Actualización_RiesgoOP,
-																content.Fecha_Actualización_Riesgo_OP
-
-																);
-														archive.WriteLine(line);
-														archive.Flush();
+										foreach (var data in lsDataToExportFile) {
+												DataStructureForFile row = new DataStructureForFile();
+												row.nit = data.NIT;
+												row.consecutivo = data.Consecutivo;
+												row.canal = data.Canal;
+												row.cliente = data.Cliente;
+												row.gerenteRenting = data.GerenteRenting;
+												row.vp = data.VP;
+												row.banca = data.Banca;
+												row.segmento = data.Segmento;
+												row.regional = data.Regional;
+												row.cne = data.CNE;
+												row.ccBanco = data.CCBanco;
+												row.gerenteBanco = data.GerenteBanco;
+												row.departamentoEmpresa = data.DepartamentoEmpresa;
+												row.ciudadEmpresa = data.CiudadEmpresa;
+												row.daneEmpresa = data.DaneEmpresa;
+												row.contactoEmpresa = data.ContactoEmpresa;
+												row.cargo = data.Cargo;
+												row.telefono = data.Telefono;
+												row.celular = data.Celular;
+												row.direccion = data.Direccion;
+												row.correo = data.Correo;
+												row.actividadEconomica = data.ActividadEconomica;
+												row.codigoActividadEconomica = data.CodigoActEconomica;
+												row.observaciones = data.Observaciones;
+												if (data.FechaVisita != null) {
+														row.fechaVisita = DateTime.Parse(data.FechaVisita.ToString());
 												}
+												if (data.FechaUltimaVisita != null) {
+														row.fechaUltimaVisita = DateTime.Parse(data.FechaUltimaVisita.ToString());
+												}												
+												row.estadoPrincipal = data.EstadoPrincipal;
+												row.estadoSecundario = data.EstadoSecundario;
+												row.tercerEstado = data.TercerEstado;
+												row.probabilidad = data.Probabilidad;
+												row.decisionRiesgo = data.DecisionRiesgo;
+												if (data.FechaRadicacionRiesgo != null) {
+														row.fechaRadicacionRiesgo = DateTime.Parse(data.FechaRadicacionRiesgo.ToString());
+												}												
+												row.montoAprobado = data.MontoAprobado;
+												row.vehiculosEntregados = data.VehiculosEntregados;
+												row.montoActivosEntregado = data.MontoActivosEntregados;
+												if (data.FechaLegalizacion != null) {
+														row.fechaLegalizacion = DateTime.Parse(data.FechaLegalizacion.ToString());
+												}
+												if (data.FechaEntrega != null) {
+														row.fechaEntrega = DateTime.Parse(data.FechaEntrega.ToString());
+												}											
+												row.usuarioCreacionRegistro = data.UsuarioCreacionRegistro;
+												if (data.FechaCreacion != null) {
+														row.fechaCreacion = DateTime.Parse(data.FechaCreacion.ToString());
+												}												
+												row.usuarioActualizacionRiesgo = data.UsuarioActualizacionRegistro;
+												if (data.FechaActualizacion != null ) {
+														row.fechaActualizacion = DateTime.Parse(data.FechaActualizacion.ToString());
+												}												
+												row.usuarioActualizacionRiesgoOP = data.UsuarioActualizacionRiesgoOP;
+												if (data.FechaActualizacionRiesgoOP != null) {
+														row.fechaActualizacionRiesgoOp = DateTime.Parse(data.FechaActualizacionRiesgoOP.ToString());
+												}
+												
+
+
+												lsDataFile.Add(row);
 										}
-
+											
+										return Ok(lsDataFile);
 								}
-								//prueba
-
-								response.response = true;
-								response.message = "Se ha creado el archivo correctamente;" + path;
-
-								return Ok(response);
+								
 						}
 						catch (Exception ex)
 						{
-								return BadRequest(ex.StackTrace);
-								throw;
+								return BadRequest(ex.StackTrace);	
 						}
 				}
+
+				
 
 				
 

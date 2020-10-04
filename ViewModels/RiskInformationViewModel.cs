@@ -10,7 +10,8 @@ namespace API_RA_Forms.ViewModels
         public int id;
         public DateTime? dateSubmissionAnalysis;
         public DateTime? dateResponseAnalysis;
-        public long ammountApproved;
+        public long ammountApproved;        
+        public DateTime? dateApproved;
         public StateViewModel riskState;
         public DateTime? datefiling;
         public UserViewModel user;

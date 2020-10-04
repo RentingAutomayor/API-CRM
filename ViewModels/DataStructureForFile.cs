@@ -31,25 +31,26 @@ namespace API_RA_Forms.ViewModels
 				public string actividadEconomica;
 				public string codigoActividadEconomica;
 				public string observaciones;
-				public Nullable<DateTime> fechaVisita;
-				public Nullable<DateTime> fechaUltimaVisita;
+				public string fechaVisita;
+				public string fechaUltimaVisita;
 				public string estadoPrincipal;
 				public string estadoSecundario;
 				public string tercerEstado;
 				public string probabilidad;
 				public string decisionRiesgo;
-				public Nullable<DateTime> fechaRadicacionRiesgo;
+				public string fechaRadicacionRiesgo;
+				public string fechaAprobacion;
 				public Nullable<long> montoAprobado;
 				public Nullable<int> vehiculosEntregados;
 				public Nullable<long> montoActivosEntregado;
-				public Nullable<DateTime> fechaLegalizacion;
-				public Nullable<DateTime> fechaEntrega;
+				public string fechaLegalizacion;
+				public string fechaEntrega;
 				public string usuarioCreacionRegistro;
-				public Nullable<DateTime> fechaCreacion;
+				public string fechaCreacion;
 				public string usuarioActualizacionRiesgo;
-				public Nullable<DateTime> fechaActualizacion;
+				public string fechaActualizacion;
 				public string usuarioActualizacionRiesgoOP;
-				public Nullable<DateTime> fechaActualizacionRiesgoOp;
+				public string fechaActualizacionRiesgoOp;
 
 		}
 }

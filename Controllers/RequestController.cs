@@ -19,7 +19,7 @@ namespace API_RA_Forms.Controllers
 		{
 				[HttpGet]
 				public IHttpActionResult GetAllRequest()
-				{						
+				{
 						try
 						{
 								using (BDRAEntities db = new BDRAEntities())
@@ -100,10 +100,12 @@ namespace API_RA_Forms.Controllers
 				}
 
 				[HttpGet]
-				public IHttpActionResult GetRequestById(int pRequest_id) {
+				public IHttpActionResult GetRequestById(int pRequest_id)
+				{
 						try
 						{
-								using (BDRAEntities db = new BDRAEntities()) {
+								using (BDRAEntities db = new BDRAEntities())
+								{
 										var RequestDB = db.Request.Where(r => r.rqt_id == pRequest_id && r.rqt_state == true)
 																						.Select(r => new RequestViewModel
 																						{
@@ -133,29 +135,35 @@ namespace API_RA_Forms.Controllers
 																												description = r.Client.EconomicActivity.ea_description
 																										}
 																								},
-																								probability = new ProbabilityViewModel { 
-																										id = r.probability.prb_id, 
-																										description = r.probability.prb_description 
+																								probability = new ProbabilityViewModel
+																								{
+																										id = r.probability.prb_id,
+																										description = r.probability.prb_description
 																								},
-																								parentState = new StateViewModel { 
-																										id = r.states.sta_id, 
-																										description = r.states.sta_description 
+																								parentState = new StateViewModel
+																								{
+																										id = r.states.sta_id,
+																										description = r.states.sta_description
 																								},
-																								childState = new StateViewModel { 
+																								childState = new StateViewModel
+																								{
 																										id = r.states1.sta_id,
-																										description = r.states1.sta_description 
+																										description = r.states1.sta_description
 																								},
-																								user = new UserViewModel { 
+																								user = new UserViewModel
+																								{
 																										id = r.users.usu_document,
 																										name = r.users.usu_name,
-																										lastName = r.users.usu_lastName 
+																										lastName = r.users.usu_lastName
 																								},
-																								contact = new ContactViewModel { 
-																										id = r.Contact.cnt_id, 
-																										name = r.Contact.cnt_name, 
-																										lastName = r.Contact.cnt_lastName 
+																								contact = new ContactViewModel
+																								{
+																										id = r.Contact.cnt_id,
+																										name = r.Contact.cnt_name,
+																										lastName = r.Contact.cnt_lastName
 																								},
-																								canal = new CanalViewModel { 
+																								canal = new CanalViewModel
+																								{
 																										id = r.cnl_id,
 																										description = r.Canal.cnl_description
 																								},
@@ -165,74 +173,75 @@ namespace API_RA_Forms.Controllers
 																								registrationDate = r.rqt_registrationDate
 																						}).FirstOrDefault();
 
-										
-												var riskInformation = db.riskInformationByRequest.Where(ri => ri.rqt_id == RequestDB.id && ri.ribr_state == true).FirstOrDefault();
 
-												if (riskInformation.states != null)
+										var riskInformation = db.riskInformationByRequest.Where(ri => ri.rqt_id == RequestDB.id && ri.ribr_state == true).FirstOrDefault();
+
+										if (riskInformation.states != null)
+										{
+												var oState = new StateViewModel();
+												oState.id = riskInformation.states.sta_id;
+												oState.description = riskInformation.states.sta_description;
+
+												RequestDB.riskInformation = new RiskInformationViewModel()
 												{
-														var oState = new StateViewModel();
-														oState.id = riskInformation.states.sta_id;
-														oState.description = riskInformation.states.sta_description;
-
-														RequestDB.riskInformation = new RiskInformationViewModel()
-														{
-																id = riskInformation.ribr_id,
-																riskState = oState,
-																ammountApproved = long.Parse(riskInformation.ribr_ammountApproved.ToString()),
-																datefiling = riskInformation.ribr_dateFiling
-														};
-												}
-
-
-
-												var operationalInformation = db.operationalInformationByRequest.Where(oi => oi.rqt_id == RequestDB.id && oi.oibr_state == true).FirstOrDefault();
-
-
-												RequestDB.operationalInformation = new OperationalInformationViewModel()
-												{
-														id = operationalInformation.oibr_id,
-														deliveredAmmount = Decimal.Parse(operationalInformation.oibr_deliveredAmmount.ToString()),
-														deliveredVehicles = int.Parse(operationalInformation.oibr_deliveredVehicles.ToString()),
-														deliveredDate = operationalInformation.oibr_deliveredDate,
-														legalizationDate = operationalInformation.oibr_legalizationDate
+														id = riskInformation.ribr_id,
+														riskState = oState,
+														ammountApproved = long.Parse(riskInformation.ribr_ammountApproved.ToString()),
+														dateApproved = riskInformation.ribr_dateApproved,
+														datefiling = riskInformation.ribr_dateFiling
 												};
+										}
+
+
+
+										var operationalInformation = db.operationalInformationByRequest.Where(oi => oi.rqt_id == RequestDB.id && oi.oibr_state == true).FirstOrDefault();
+
+
+										RequestDB.operationalInformation = new OperationalInformationViewModel()
+										{
+												id = operationalInformation.oibr_id,
+												deliveredAmmount = Decimal.Parse(operationalInformation.oibr_deliveredAmmount.ToString()),
+												deliveredVehicles = int.Parse(operationalInformation.oibr_deliveredVehicles.ToString()),
+												deliveredDate = operationalInformation.oibr_deliveredDate,
+												legalizationDate = operationalInformation.oibr_legalizationDate
+										};
 
 
 
 
-												try
-												{
+										try
+										{
 
-														var branch = db.branch.Where(br => br.cli_document == RequestDB.client.id).FirstOrDefault();
-														var lsContactsByClient = db.Contact.Where(cnt => cnt.bra_id == branch.bra_id)
-																													.Select(cnt => new ContactViewModel
-																													{
-																															id = cnt.cnt_id,
-																															name = cnt.cnt_name,
-																															lastName = cnt.cnt_lastName,
-																															phone = cnt.cnt_phone,
-																															cellPhone = cnt.cnt_cellPhone,
-																															email = cnt.cnt_email,
-																															jobTitle = new JobTitleViewModel { id = cnt.JobTitlesClient.jtcl_id, description = cnt.JobTitlesClient.jtcl_description },
-																															adress = cnt.cnt_adress,
-																															branch = new BranchViewModel { id = cnt.branch.bra_id, name = cnt.branch.bra_name }
-																													}).ToList();
+												var branch = db.branch.Where(br => br.cli_document == RequestDB.client.id).FirstOrDefault();
+												var lsContactsByClient = db.Contact.Where(cnt => cnt.bra_id == branch.bra_id)
+																											.Select(cnt => new ContactViewModel
+																											{
+																													id = cnt.cnt_id,
+																													name = cnt.cnt_name,
+																													lastName = cnt.cnt_lastName,
+																													phone = cnt.cnt_phone,
+																													cellPhone = cnt.cnt_cellPhone,
+																													email = cnt.cnt_email,
+																													jobTitle = new JobTitleViewModel { id = cnt.JobTitlesClient.jtcl_id, description = cnt.JobTitlesClient.jtcl_description },
+																													adress = cnt.cnt_adress,
+																													branch = new BranchViewModel { id = cnt.branch.bra_id, name = cnt.branch.bra_name }
+																											}).ToList();
 
 
-														RequestDB.client.lsContacts = lsContactsByClient;
-												}
-												catch (Exception ex)
-												{
-														Console.WriteLine("El cliente no tiene contactos");												
+												RequestDB.client.lsContacts = lsContactsByClient;
+										}
+										catch (Exception ex)
+										{
+												Console.WriteLine("El cliente no tiene contactos");
 
-												}
+										}
 										return Ok(RequestDB);
 								}
-								
+
 						}
 						catch (Exception ex)
 						{
-								return BadRequest(ex.Message);	
+								return BadRequest(ex.Message);
 						}
 				}
 
@@ -427,6 +436,10 @@ namespace API_RA_Forms.Controllers
 												oRiskInformation.ribr_ammountApproved = pRequest.riskInformation.ammountApproved;
 										}
 
+										if (pRequest.riskInformation.dateApproved != null) {
+												oRiskInformation.ribr_dateApproved = pRequest.riskInformation.dateApproved;
+										}
+
 										oRiskInformation.ribr_dateUpdateRow = DateTime.Now;
 										oRiskInformation.usu_document = pRequest.riskInformation.user.id;
 
@@ -522,15 +535,18 @@ namespace API_RA_Forms.Controllers
 				}
 
 				[HttpGet]
-				public IHttpActionResult GetDataToExportFile() {
+				public IHttpActionResult GetDataToExportFile()
+				{
 						try
 						{
 								List<DataStructureForFile> lsDataFile = new List<DataStructureForFile>();
 								using (BDRAEntities db = new BDRAEntities())
 								{
-										var lsDataToExportFile = db.STRPRC_GetDataToExportFile();
+										db.Database.CommandTimeout = 300;
+										var lsDataToExportFile = db.STRPRC_GetData_To_ExportFile();
 
-										foreach (var data in lsDataToExportFile) {
+										foreach (var data in lsDataToExportFile)
+										{
 												DataStructureForFile row = new DataStructureForFile();
 												row.nit = data.NIT;
 												row.consecutivo = data.Consecutivo;
@@ -555,61 +571,43 @@ namespace API_RA_Forms.Controllers
 												row.correo = data.Correo;
 												row.actividadEconomica = data.ActividadEconomica;
 												row.codigoActividadEconomica = data.CodigoActEconomica;
-												row.observaciones = data.Observaciones;
-												if (data.FechaVisita != null) {
-														row.fechaVisita = DateTime.Parse(data.FechaVisita.ToString());
-												}
-												if (data.FechaUltimaVisita != null) {
-														row.fechaUltimaVisita = DateTime.Parse(data.FechaUltimaVisita.ToString());
-												}												
+												row.observaciones = data.Observaciones;										
+												row.fechaVisita = (data.FechaVisita != null)?data.FechaVisita.Substring(0, 10):"";											
+												row.fechaUltimaVisita = (data.FechaUltimaVisita != null)?data.FechaUltimaVisita.Substring(0, 10):"";											
 												row.estadoPrincipal = data.EstadoPrincipal;
 												row.estadoSecundario = data.EstadoSecundario;
-												row.tercerEstado = data.TercerEstado;
+												row.tercerEstado = (data.TercerEstado != null)? data.TercerEstado:"" ;
 												row.probabilidad = data.Probabilidad;
-												row.decisionRiesgo = data.DecisionRiesgo;
-												if (data.FechaRadicacionRiesgo != null) {
-														row.fechaRadicacionRiesgo = DateTime.Parse(data.FechaRadicacionRiesgo.ToString());
-												}												
+												row.decisionRiesgo = data.DecisionRiesgo;											
+												row.fechaRadicacionRiesgo = (data.FechaRadicacionRiesgo != null)?data.FechaRadicacionRiesgo.Substring(0, 10):"";
+												row.fechaAprobacion = (data.FechaAprobacion != null) ? data.FechaAprobacion.Substring(0, 10) : "";
 												row.montoAprobado = data.MontoAprobado;
 												row.vehiculosEntregados = data.VehiculosEntregados;
-												row.montoActivosEntregado = data.MontoActivosEntregados;
-												if (data.FechaLegalizacion != null) {
-														row.fechaLegalizacion = DateTime.Parse(data.FechaLegalizacion.ToString());
-												}
-												if (data.FechaEntrega != null) {
-														row.fechaEntrega = DateTime.Parse(data.FechaEntrega.ToString());
-												}											
-												row.usuarioCreacionRegistro = data.UsuarioCreacionRegistro;
-												if (data.FechaCreacion != null) {
-														row.fechaCreacion = DateTime.Parse(data.FechaCreacion.ToString());
-												}												
-												row.usuarioActualizacionRiesgo = data.UsuarioActualizacionRegistro;
-												if (data.FechaActualizacion != null ) {
-														row.fechaActualizacion = DateTime.Parse(data.FechaActualizacion.ToString());
-												}												
-												row.usuarioActualizacionRiesgoOP = data.UsuarioActualizacionRiesgoOP;
-												if (data.FechaActualizacionRiesgoOP != null) {
-														row.fechaActualizacionRiesgoOp = DateTime.Parse(data.FechaActualizacionRiesgoOP.ToString());
-												}
-												
-
-
+												row.montoActivosEntregado = data.MontoActivosEntregados;												
+												row.fechaLegalizacion = (data.FechaLegalizacion != null)?data.FechaLegalizacion.Substring(0, 10):"";											
+												row.fechaEntrega = (data.FechaEntrega != null)?data.FechaEntrega.Substring(0,10):"";												
+												row.usuarioCreacionRegistro = data.UsuarioCreacionRegistro;												
+												row.fechaCreacion = (data.FechaCreacion != null)?data.FechaCreacion.Substring(0, 10):"";												
+												row.usuarioActualizacionRiesgo = data.UsuarioActualizacionRegistro;											
+												row.fechaActualizacion = (data.FechaActualizacion != null)?data.FechaActualizacion.Substring(0, 10):"";											
+												row.usuarioActualizacionRiesgoOP = data.UsuarioActualizacionRiesgoOP;												
+												row.fechaActualizacionRiesgoOp = (data.FechaActualizacionRiesgoOP != null)? data.FechaActualizacionRiesgoOP.Substring(0, 10):"";
 												lsDataFile.Add(row);
 										}
-											
+
 										return Ok(lsDataFile);
 								}
-								
+
 						}
 						catch (Exception ex)
 						{
-								return BadRequest(ex.StackTrace);	
+								return BadRequest(ex.StackTrace);
 						}
 				}
 
-				
 
-				
+
+
 
 		}
 }

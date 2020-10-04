@@ -16,15 +16,17 @@ namespace API_RA_Forms.Controllers
             try
             {
                 using (BDRAEntities db = new BDRAEntities()) {
-                    var branch = db.branch.Where(br => br.ally_document == "860035827" && br.bra_isMain == true)
+                    var AV_VILLAS_NIT = "860035827";
+                    var branch = db.branch.Where(br => br.ally_document == AV_VILLAS_NIT && br.bra_isMain == true)
                                                .Select(br => new BranchViewModel { id = br.bra_id, name = br.bra_name}).FirstOrDefault();
-                    var lsAccountManager = db.Contact.Where(cnt => cnt.bra_id == branch.id)
+                    var lsAccountManager = db.Contact.Where(cnt => cnt.bra_id == branch.id && cnt.cnt_state == true)
                                                      .Select(
                                                             cnt => new ContactViewModel { 
                                                             id = cnt.cnt_id,
                                                             name = cnt.cnt_name,
-                                                            lastName = cnt.cnt_lastName
-                                                            }).ToList();
+                                                            lastName = (cnt.cnt_lastName!=null)?cnt.cnt_lastName:"",
+                                                            })
+                                                     .ToList().OrderBy(cnt => cnt.name);
 
                     return Ok(lsAccountManager);
                 }

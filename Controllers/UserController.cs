@@ -7,6 +7,10 @@ using System.Net.Http;
 using System.Web.Http;
 using DAO;
 using System.Web.Http.Cors;
+using System.Security.Cryptography;
+using System.Text;
+using System.Configuration;
+using System.IO;
 
 namespace API_RA_Forms.Controllers
 {
@@ -52,10 +56,18 @@ namespace API_RA_Forms.Controllers
             {
                 ResponseViewModel resp = new ResponseViewModel();
                 using (BDRAEntities db = new BDRAEntities()) {
-                    var userAuth = db.logins.Where(lg => lg.log_userName == loginUserRA.userName && lg.log_password == loginUserRA.password)
+;
+
+                    var isAuth = false;
+                    var userAuth = db.logins.Where(lg => lg.log_userName == loginUserRA.userName)
                                             .FirstOrDefault();
-                    
-                    if (userAuth != null)
+
+                    var passwordDecrypt = DecryptStringAES(loginUserRA.password);
+                    var passwordBD = DecryptStringAES(userAuth.log_password);
+
+                    isAuth = (passwordBD == passwordDecrypt) ?  true : false; 
+
+                    if (isAuth)
                     {
                         var user = db.users.Where(u => u.usu_document == userAuth.usu_document)
                                             .Select(u => new UserViewModel { 
@@ -108,6 +120,38 @@ namespace API_RA_Forms.Controllers
                 return BadRequest(ex.Message);
                 throw;
             }
+        }
+
+        private string DecryptStringAES(string data) {
+            var dataEncrypted = Convert.FromBase64String(data);
+            var decryptedData = DecryptStringForBytes(dataEncrypted);
+            return string.Format(decryptedData);
+        }
+
+
+        private string DecryptStringForBytes(byte[] data) {
+						try
+						{
+                AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider();
+                aesAlg.KeySize = 256;
+                aesAlg.BlockSize = 128;
+                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.Mode = CipherMode.CBC;
+                aesAlg.Key = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["secretKey"].PadLeft(32));
+                aesAlg.IV = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["iv"].PadLeft(16));
+
+                ICryptoTransform crypto = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                byte[] aData = crypto.TransformFinalBlock(data, 0, data.Length);
+
+
+                return System.Text.ASCIIEncoding.ASCII.GetString(aData);
+
+            }
+            catch (Exception)
+						{
+								throw;
+						}
+          
         }
     }
 }

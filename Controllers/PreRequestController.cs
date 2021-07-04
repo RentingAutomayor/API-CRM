@@ -401,5 +401,43 @@ namespace API_RA_Forms.Controllers
 								return false;
 						}
 				}
+
+				[HttpGet]
+				public IHttpActionResult GetDataToExport() {
+						try
+						{
+								using (BDRAEntities db = new BDRAEntities()) {
+										List<DataStructureForFilePN> lsDataPN = new List<DataStructureForFilePN>();
+										var lsPrReqeust = db.STRPRC_GET_DATA_TO_EXPORT_FILE_PN();
+
+										foreach (var dtPrRequest in lsPrReqeust)
+										{
+												DataStructureForFilePN dataPN = new DataStructureForFilePN();
+												dataPN.consecutivo = dtPrRequest.Consecutivo;
+												dataPN.fechaRegistro = dtPrRequest.Fecha_de_registro;
+												dataPN.cliente = dtPrRequest.Cliente;
+												dataPN.email = dtPrRequest.Email;
+												dataPN.celular = dtPrRequest.Celular;
+												dataPN.ciudad = dtPrRequest.Ciudad;
+												dataPN.estado = dtPrRequest.Estado;
+												dataPN.lineaDeVehiculo = dtPrRequest.Linea_del_vehiculo;
+												dataPN.canalPrimario = dtPrRequest.Canal_primario;
+												dataPN.canalSecundario = dtPrRequest.Canal_secundario;
+												dataPN.observaciones = dtPrRequest.Observaciones;
+												dataPN.gerenteDeCuenta = dtPrRequest.Gerente_de_cuenta;
+
+												lsDataPN.Add(dataPN);
+
+										}
+
+										return Ok(lsDataPN);
+								}
+								
+						}
+						catch (Exception ex)
+						{
+								return BadRequest(ex.Message);								
+						}
+				}
 		}
 }

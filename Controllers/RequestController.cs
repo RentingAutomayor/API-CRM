@@ -158,9 +158,10 @@ namespace API_RA_Forms.Controllers
 																								},
 																								contact = new ContactViewModel
 																								{
-																										id = r.Contact.cnt_id,
-																										name = r.Contact.cnt_name,
-																										lastName = r.Contact.cnt_lastName
+																										id = (r.Contact != null)? r.Contact.cnt_id : 0,
+																										name = (r.Contact != null) ? r.Contact.cnt_name:"",
+																										lastName = (r.Contact != null) ? r.Contact.cnt_lastName:"",
+																										state = (r.Contact != null) ? r.Contact.cnt_state: false
 																								},
 																								canal = new CanalViewModel
 																								{
@@ -263,7 +264,12 @@ namespace API_RA_Forms.Controllers
 										oRequest.rqt_primaryState = pRequest.parentState.id;
 										oRequest.rqt_secondState = pRequest.childState.id;
 										oRequest.rqt_state = true;
-										oRequest.cnt_id = pRequest.contact.id;
+										if (pRequest.contact != null) {
+												if (pRequest.contact.id != 0)
+												{
+														oRequest.cnt_id = pRequest.contact.id;
+												}												
+										}									
 										oRequest.cnl_id = pRequest.canal.id;
 										oRequest.rqt_observation = pRequest.observation;
 										db.Request.Add(oRequest);
@@ -513,7 +519,12 @@ namespace API_RA_Forms.Controllers
 										oRequest.prb_id = pRequest.probability.id;
 										oRequest.rqt_primaryState = pRequest.parentState.id;
 										oRequest.rqt_secondState = pRequest.childState.id;
-										oRequest.cnt_id = pRequest.contact.id;
+										if (pRequest.contact != null)
+										{
+												if (pRequest.contact.id != 0) {
+														oRequest.cnt_id = pRequest.contact.id;
+												}												
+										}
 										oRequest.cnl_id = pRequest.canal.id;
 										oRequest.rqt_observation = pRequest.observation;
 

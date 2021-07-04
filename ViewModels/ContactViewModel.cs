@@ -16,6 +16,7 @@ namespace API_RA_Forms.ViewModels
         public string email;
         public JobTitleViewModel jobTitle;
         public BranchViewModel branch;
+        public Nullable<bool> state;
 
     }
 }
